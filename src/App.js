@@ -5,6 +5,13 @@ function App() {
   const [calc, setCalc] = useState("");
   const [resultado, setResultado] = useState("");
 
+  
+  const initialState = JSON.parse (localStorage.getItem("notas")) || [];
+  const [notas, setNotas] = useState(initialState);
+
+  const [setInputState, inputState] = useState();
+
+
   const ops = ['/', '*', '+', '-', '.'];
 
   const updateCalc = value => {
@@ -41,7 +48,11 @@ function App() {
   const calculado = () =>{
     // eslint-disable-next-line no-eval
     setCalc(eval(calc).toString());
-  }
+
+    setNotas([...notas,inputState])
+    localStorage.setItem("notas",JSON.stringify(notas));
+    reset();
+  };
 
   const borrar = () => {
     if(calc === ''){
@@ -59,10 +70,33 @@ function App() {
      }
   }
 
+  const handleClickNota = (index) => {
+    setInputState({...notas[index]});
+  }
+
   
 
   return (
     <div className="App">
+      <div className="col">
+        <h3>Lista</h3>
+        {notas.length===0 ?(
+          "No hay ninguna operacion realizada"
+        ) : (
+          <ol>
+            {notas.map((item, index) => {
+              return(
+                <li key={index} onClick={() => handleClickNota(index)}>
+                  {item.resultado}&nbsp;
+                  
+                </li>
+              );
+            })}
+          </ol>
+        )}
+
+
+
       <div className="calculadora">
         <div className="display">
           {resultado ? <span>({resultado})</span> : ''}&nbsp;
@@ -86,6 +120,7 @@ function App() {
         <button onClick={() => updateCalc('.')}>.</button>
         <button onClick={calculado}>=</button>
         </div>
+      </div>
       </div>
     </div>
   );
