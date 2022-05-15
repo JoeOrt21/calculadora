@@ -9,7 +9,9 @@ function App() {
   const initialState = JSON.parse (localStorage.getItem("notas")) || [];
   const [notas, setNotas] = useState(initialState);
 
-  const [setInputState, inputState] = useState();
+  
+  
+  
 
 
   const ops = ['/', '*', '+', '-', '.'];
@@ -49,7 +51,7 @@ function App() {
     // eslint-disable-next-line no-eval
     setCalc(eval(calc).toString());
 
-    setNotas([...notas,inputState])
+    setNotas([...notas,{calc,resultado}]);
     localStorage.setItem("notas",JSON.stringify(notas));
     reset();
   };
@@ -71,13 +73,14 @@ function App() {
   }
 
   const handleClickNota = (index) => {
-    setInputState({...notas[index]});
+    setCalc({...notas[index]});
   }
 
   
 
   return (
     <div className="App">
+      <div className="row">
       <div className="col">
         <h3>Lista</h3>
         {notas.length===0 ?(
@@ -87,7 +90,7 @@ function App() {
             {notas.map((item, index) => {
               return(
                 <li key={index} onClick={() => handleClickNota(index)}>
-                  {item.resultado}&nbsp;
+                  {item.calc} = ({item.resultado})&nbsp;
                   
                 </li>
               );
@@ -118,8 +121,14 @@ function App() {
          {crearDigitos()} 
         <button onClick={() => updateCalc('0')}>0</button>
         <button onClick={() => updateCalc('.')}>.</button>
-        <button onClick={calculado}>=</button>
+        <button
+           type="button" 
+           onClick={calculado}
+           disabled={calc.calc==="" || calc.resultado===""}
+           >=
+           </button>
         </div>
+      </div>
       </div>
       </div>
     </div>
